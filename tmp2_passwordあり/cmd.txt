@@ -1,0 +1,14 @@
+openssl genrsa -aes256 4096 > "server.key"
+openssl req -batch -new -sha256 -key "server.key" -out "server.csr" -subj "/C=JP/ST=Tokyo/L=hoge/O=foo/OU=bar/CN=foo.bar.com"
+openssl x509 -req -days 3650 -signkey "server.key" -in "server.csr" -out "server.crt"
+
+
+openssl genrsa -aes256 4096 > "client.key"
+openssl req -batch -new -sha256 -key "client.key" -out "client.csr" -subj "/C=JP/ST=Tokyo/L=hoge/O=foo/OU=bar/CN=foo.bar.com"
+openssl x509 -req -days 3650 -signkey "client.key" -in "client.csr" -out "client.crt"
+
+
+openssl pkcs12 -export -in "client.crt" -inkey "client.key" -out "client.pfx"
+
+
+
