@@ -1,0 +1,63 @@
+
+
+<html>
+    <title>
+        API実行
+    </title>
+
+    <!-- https://qiita.com/H40831/items/69f06dc98a6c446c817c -->
+
+    <script language="javascript" type="text/javascript">
+
+        
+        function async_digestMessage(message) {
+            return new Promise(function(resolve){
+                var msgUint8 = new TextEncoder("utf-8").encode(message);
+                crypto.subtle.digest('SHA-256', msgUint8).then(
+                    function(hashBuffer){
+                        var hashArray = Array.from(new Uint8Array(hashBuffer));
+                        var hashHex = hashArray.map(function(b){return b.toString(16).padStart(2, '0')}).join('');
+                        return resolve(hashHex);
+                });
+            })
+        }
+        
+        function getHashText(text) {
+            // ハッシュ化後の文字列を表示
+            console.log(text);
+        }
+        
+        
+        function OnButtonClick() {
+            let userid = document.getElementById('userid').value;
+            let merchantid = document.getElementById('merchantid').value;
+            var text = userid + merchantid + 1;
+            
+            if(window.Promise && window.crypto){
+                async_digestMessage(text).then(
+                    function(shatxt){
+                        getHashText(shatxt);
+                    }
+                    ).catch(function(e){
+                        console.log('エラー：', e.message);
+                    })
+                }else{
+                    console.log('Promiseかcryptoに非対応');
+                }
+        }
+
+    </script>
+
+    <body>
+
+        ユーザーID:<input type="text" id="userid" name="userid" size="20" value="aaaaaa">
+        <br>
+        マーチャントID:<input type="text" id="merchantid" name="merchantid" size="30" value="bbbbb">
+
+        <button type="button" onclick="OnButtonClick();">
+            API実行
+        </button>
+    </body>
+</html>
+
+
